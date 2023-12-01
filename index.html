@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Helmet Violation Detection</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+
+        #header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        #logoLeft,
+        #logoRight {
+            width: 100px;
+            height: 100px;
+            margin: 0 10px;
+            /* Add margin between logos */
+        }
+
+        #title {
+            margin: 0 20px;
+            /* Add margin around the title */
+        }
+
+        #buttons {
+            display: flex;
+            justify-content: center;
+            /* Center the buttons horizontally */
+            margin-top: 20px;
+        }
+
+        .button {
+            margin: 0 10px;
+            /* Add margin between buttons */
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #fileInput,
+        #videoInput {
+            display: none;
+            /* Hide the file input and video input by default */
+        }
+
+        #uploadImageButton,
+        #uploadVideoButton,
+        #openCameraButton {
+            margin-top: 20px;
+            cursor: pointer;
+            color: #007BFF;
+            text-decoration: underline;
+        }
+
+        #content {
+            max-width: 70%;
+            margin: 0 auto;
+        }
+
+        /* Add counter style */
+        .counter {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* border: 1px solid grey;
+            border-radius: 5px;
+            width: 400px;
+            margin: 10px auto; */
+        }
+
+        .counter div {
+            margin: 10px;
+            padding: 5px 10px;
+            /* border: 1px solid grey; */
+            border-radius: 5px;
+            font-size: 20px;
+        }
+
+        .total:before {
+            counter-reset: total;
+
+        }
+
+        .total .count:before {
+            /* counter-increment: total;
+            content: counter(total); */
+            font-weight: bold;
+
+        }
+
+        .plus:before {
+            counter-reset: plus;
+        }
+
+        .plus .count:before {
+            /* counter-increment: plus;
+            content: counter(plus); */
+            font-weight: bold;
+        }
+
+        .minus:before {
+            counter-reset: minus;
+        }
+
+        .minus .count:before {
+            /* counter-increment: minus;
+            content: counter(minus); */
+            font-weight: bold;
+
+        }
+
+        /* -----------------------------? */
+        .container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .box {
+            width: 500px;
+            height: 400px;
+            border: 1px solid grey;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 5px;
+        }
+
+        .total {
+            background-color: #e7b416;
+            color: white;
+        }
+
+        .plus {
+            background-color: #2dc937;
+            color: white;
+        }
+
+        .minus {
+            background-color: #cc3232;
+            color: white;
+        }
+
+        label {
+            padding: 5px 10px;
+            /* background: grey; */
+            display: table;
+            color: grey;
+            border: 1px solid grey;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px auto;
+            font-size: 14px;
+        }
+
+        label:hover {
+            background: gray;
+            color: white;
+
+        }
+
+        button {
+            direction: none;
+            padding: 5px 10px;
+            /* background: grey; */
+            /* display: table; */
+            color: grey;
+            border: 1px solid grey;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px auto;
+            font-size: 14px;
+            border: none;
+        }
+
+        button:hover {
+            background: gray;
+            color: white !important;
+        }
+
+        #myVideo {
+            border-radius: 5px;
+        }
+
+
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .count{
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="header">
+        <img id="logoLeft" src="https://moitt.gov.pk/SiteImage/NewsEvents/logo_new.png" alt="Left Logo">
+        <h1 id="title">Real-Time Helmet Violation Detection System in Islamabad</h1>
+        <img id="logoRight" src="https://metapi.pk/wp-content/uploads/2023/02/Meta-Pi-Logo-Final-01-1.png"
+            alt="Right Logo">
+    </div>
+    <div>
+        <span class="description"><b>Supervisor:</b> Dr. Aleem Khaliq</span>
+        <span class="description"><b>Group Members:</b> Muhammad Asad Iqbal, Anwar Sadad, Malik Muhammad Ishaq, Naeem
+            Ullah,
+            Bahar Ahmed, and Zain Ramzan</span>
+    </div>
+    <hr>
+    <div id="content"></div>
+    <div class="counter">
+        <div class="total">Total Bikes: <span class="count" id="total_bikes"></span></div>
+        <div class="plus">Helmet: <span class="count" id="helmet"></span></div>
+        <div class="minus">No Helmet: <span class="count" id="no_helmet"></span></div>
+    </div>
+    <div class="container">
+
+        <!-- *********Code for Image Start************** -->
+        <!-- <div class="box">
+            <img id="myImg" src="" alt="Add your image/video" width="450px" height="350px">
+            <label id="upload" for="myFile">Upload Image/Video</label>
+            <input type="file" id="myFile" size="60">
+            <button id="deleteButton">Delete</button>
+        </div> -->
+        <!-- *************Code for Image ended*************** -->
+
+        <div class="box">
+            <video id="myVideo" width="480px" height="350px" controls></video>
+            <label id="upload" for="myFile">Upload Video</label>
+            <input type="file" id="myFile" size="60" accept="image/*,video/*">
+            <button id="deleteButton">Delete</button>
+        </div>
+
+        <div class="box">
+
+            <canvas id="myChart" width="300px" height="300px"></canvas>
+        </div>
+    </div>
+
+    <script>
+        var input = document.getElementById('myFile');
+        var video = document.getElementById('myVideo');
+        var deleteButton = document.getElementById('deleteButton');
+        deleteButton.style.display = 'none';
+        var uploadButton = document.getElementById('upload');
+        input.addEventListener('change', function (event) {
+            var file = event.target.files[0];
+            var reader = new FileReader();
+            reader.onload = function (event) {
+                if (file.type.match('video.*')) {
+                    video.src = event.target.result;
+                    video.play();
+                } else if (file.type.match('image.*')) {
+                    video.src = '';
+                    video.poster = event.target.result;
+                }
+                uploadButton.style.display = 'none',
+                    deleteButton.style.display = 'block';
+            }
+            reader.readAsDataURL(file);
+        });
+        deleteButton.addEventListener('click', function (event) {
+            video.src = '';
+            video.poster = '';
+            input.value = '';
+            deleteButton.style.display = 'none';
+            uploadButton.style.display = 'block';
+        });
+        // *********Code for Image Start**************
+        // var input = document.getElementById('myFile');
+        // var img = document.getElementById('myImg');
+        // var deleteButton = document.getElementById('deleteButton');
+        // deleteButton.style.display = 'none';
+        // var uploadButton = document.getElementById('upload');
+        // input.addEventListener('change', function (event) {
+        //     var file = event.target.files[0];
+        //     var reader = new FileReader();
+        //     reader.onload = function (event) {
+        //         img.src = event.target.result;
+        //         uploadButton.style.display = 'none',
+        //             deleteButton.style.display = 'block';
+        //     }
+        //     reader.readAsDataURL(file);
+        // });
+        // deleteButton.addEventListener('click', function (event) {
+        //     img.src = '';
+        //     input.value = '';
+        //     deleteButton.style.display = 'none';
+        //     uploadButton.style.display = 'block';
+        // });
+
+        // *********Code for Image Ended**************
+
+
+
+        // Add chart code
+        var bikes = 60
+        var with_helmet = 40
+        var without_helmet = 20
+        // const maxVal = Math.max(totalBikes + 10);
+        var total_bikes = document.getElementById('total_bikes').innerHTML = bikes
+        var helmet = document.getElementById('helmet').innerHTML = with_helmet
+        var no_helmet = document.getElementById('no_helmet').innerHTML = without_helmet
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Total Helmets', 'Helmet', 'No Helmet'],
+                datasets: [{
+                    label: 'Helmet Violation Detection Statistics',
+                    data: [total_bikes, helmet, no_helmet],
+                    backgroundColor: ['#e7b416', '#2dc937', '#cc3232'],
+                    borderWidth: 1,
+                    barThickness: 50
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        max: total_bikes + 10,
+                    },
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                        }
+                    }]
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
